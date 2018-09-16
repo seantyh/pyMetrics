@@ -28,6 +28,19 @@ def find_in_trees(tree_x, tree_ref):
             return None
 
 def tree_equals(tree_a, tree_b):
-    pass
+    children_a = list(ast.iter_child_nodes(tree_a))
+    children_b = list(ast.iter_child_nodes(tree_b))
+    if len(children_a) != len(children_b):
+        return False
+    if type(tree_a) is type(tree_b):
+        return False
+
+    are_children_equal = True
+    for ch_a, ch_b in zip(children_a, children_b):
+        are_children_equal &= tree_equals(ch_a, ch_b)
+        if not are_children_equal:
+            break
+    return are_children_equal
+    
 
 
