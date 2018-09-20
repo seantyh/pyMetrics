@@ -18,3 +18,8 @@ def test_simple_inclusion():
     found = pyMetrics.find_in_trees(tree_a_assig, tree_b)
     assert len(found) > 0    
     logger.info("found: %s", found)
+
+def test_cross_inclusion():
+    tree_a = ast.parse("a=1+(1+2)")
+    tree_b = ast.parse("b=1+2")
+    pyMetrics.compare_trees(tree_a, tree_b)

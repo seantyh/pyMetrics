@@ -19,11 +19,16 @@ def to_nodetype_vec(codes):
     node_types = [type(x).__name__ for x in nodes]
 
 def compare_trees(tree_x, tree_ref):
-    children = tree_x.iter_child_nodes()
-    for node_ch in children:
-        compare_trees(node_ch, tree_ref)
-    print(tree_x)
-    find_in_trees(tree_x, tree_ref)
+    found = find_in_trees(tree_x, tree_ref) 
+    if not found:
+        children = tree_x.iter_child_nodes()
+        ret_buf = []
+        for node_ch in children:          
+            node_refs = compare_trees(node_ch, tree_ref) 
+            ret_buf += node_refs
+    else:
+        ret_buf = [tree_ref]
+    return ret_buf
 
 def find_in_trees(tree_x, tree_ref):
     is_equal = tree_equals(tree_x, tree_ref)
