@@ -32,8 +32,7 @@ def find_in_trees(tree_x, tree_ref):
         ret_buf = []
         children = ast.iter_child_nodes(tree_ref)
         for node_ch in children:
-            equal_tree = find_in_trees(tree_x, node_ch)
-            pdb.set_trace()
+            equal_tree = find_in_trees(tree_x, node_ch)            
             ret_buf += equal_tree
     else:
         ret_buf = [tree_ref]
