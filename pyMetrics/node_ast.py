@@ -6,29 +6,25 @@ import pdb
 logger = logging.getLogger("node_ast")
 logger.setLevel("INFO")
 
-def get_node_types():
-    node_types = [x for x in dir(_ast) if x[0].isupper()]
-    exclue_types = ['AST', 'PyCF_ONLY_AST', 'Interactive']
-    for x in exclude_types:
-        node_types.remove(x)
-    return node_types
-
-def to_nodetype_vec(codes):
-    tree = ast.parse(codes)
-    nodes = list(ast.walk(tree))
-    node_types = [type(x).__name__ for x in nodes]
-
 def compare_trees(tree_x, tree_ref):
-    found = find_in_trees(tree_x, tree_ref) 
-    if not found:
-        children = tree_x.iter_child_nodes()
-        ret_buf = []
-        for node_ch in children:          
-            node_refs = compare_trees(node_ch, tree_ref) 
-            ret_buf += node_refs
-    else:
-        ret_buf = [tree_ref]
-    return ret_buf
+    children = list(ast.iter_child_nodes(tree_x))
+    children_diff = set(children)
+    ret_map = {}
+    for node_ch in children:
+        node_refs = compare_trees(node_ch, tree_ref)
+        if node_refs:
+            ret_map.update(node_refs)
+            children_diff.remove(node_ch)
+
+    if not children_diff:
+        # if all children are matched, 
+        # try the parent itself
+        found = find_in_trees(tree_x, tree_ref)        
+        if found:            
+            ret_map = {}
+            ret_map[tree_x] = found                    
+
+    return ret_map
 
 def find_in_trees(tree_x, tree_ref):
     is_equal = tree_equals(tree_x, tree_ref)
@@ -37,7 +33,7 @@ def find_in_trees(tree_x, tree_ref):
         ret_buf = []
         children = ast.iter_child_nodes(tree_ref)
         for node_ch in children:
-            equal_tree = find_in_trees(tree_x, node_ch)            
+            equal_tree = find_in_trees(tree_x, node_ch)
             ret_buf += equal_tree
     else:
         ret_buf = [tree_ref]
@@ -83,5 +79,16 @@ def tree_equals(tree_a, tree_b, structure_only=False):
     logger.debug("are_children_equal: %s", are_fields_equal)
     return are_fields_equal
 
+def node_count(tree):
+    children = ast.iter_child_nodes(tree)
+    n_node = 1
+    for node_ch in children:
+        n_node += node_count(node_ch)
+    return n_node
 
-
+def tree_depth(tree):
+    children = ast.iter_child_nodes(tree)    
+    depth = 0
+    for node_ch in children:
+        depth = max(depth, tree_depth(node_ch))
+    return depth
