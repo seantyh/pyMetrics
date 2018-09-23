@@ -13,4 +13,12 @@ def test_adv_nodes():
         "  yield aaa"
     )
     print(pyMetrics.get_advance_nodes(tree))
+
+def test_import_nodes():
+    tree = ast.parse(
+        "from os.path import join\n"
+        "import re"
+    )
+
+    print(pyMetrics.get_import_modules(tree))
     

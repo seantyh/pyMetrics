@@ -1,5 +1,6 @@
 
 import ast
+import _ast
 
 def get_node_in_category(tree, type_list):
     nodes = list(ast.walk(tree))
@@ -37,14 +38,30 @@ def get_class_nodes(tree):
 
 def get_string(tree):
     STRING_NODE_TYPES = ["Str"]
-    str_nodes = get_node_in_category(tree, STRING_NODE_TYPES)
+    str_nodes = get_node_in_category(tree, STRING_NODE_TYPES)    
+    str_nodes.sort(key=lambda x: x.lineno)
     str_list = [x.s for x in str_nodes]
     return str_list
 
 def get_called_func_names(tree):
     STRING_NODE_TYPES = ["Call"]
-    call_nodes = get_node_in_category(tree, STRING_NODE_TYPES)        
-    func_list = [x.func.id for x in call_nodes]
+    call_nodes = get_node_in_category(tree, STRING_NODE_TYPES)    
+    func_list = []
+    for node_x in call_nodes:
+        func_node = node_x.func
+        if isinstance(func_node, _ast.Name):           
+            func_list.append(func_node.id)
     return func_list
+
+def get_import_modules(tree):
+    imp_nodes = get_import_nodes(tree)
+    module_list = []
+    
+    for node_x in imp_nodes:
+        if isinstance(node_x, _ast.Import):
+            module_list += [x.name for x in node_x.names]
+        else:
+            module_list.append(node_x.module)        
+    return module_list
 
     

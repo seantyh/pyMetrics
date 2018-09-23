@@ -7,8 +7,8 @@ logger = logging.getLogger("NodeVec")
 logger.setLevel("INFO")
 
 def get_type_axis():
-    node_types = [x for x in dir(_ast) if x[0].isupper()]
-    exclude_types = ['AST', 'PyCF_ONLY_AST', 'Interactive']
+    node_types = [x for x in dir(_ast) if x[0]!="_"]
+    exclude_types = ['AST', 'PyCF_ONLY_AST', 'Interactive']    
     for x in exclude_types:
         node_types.remove(x)
     return node_types
@@ -22,7 +22,7 @@ def to_type_vec(tree):
         try:
             type_idx = type_axis.index(name_x)
             type_count[type_idx] += 1
-        except ValueError as ex:
+        except ValueError as ex:            
             logger.warning(ex)
     return type_count
 

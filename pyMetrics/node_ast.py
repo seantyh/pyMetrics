@@ -90,5 +90,5 @@ def tree_depth(tree):
     children = ast.iter_child_nodes(tree)    
     depth = 0
     for node_ch in children:
-        depth = max(depth, tree_depth(node_ch))
+        depth = max(depth+1, tree_depth(node_ch))
     return depth
