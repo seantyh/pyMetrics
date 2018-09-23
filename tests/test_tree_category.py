@@ -21,4 +21,18 @@ def test_import_nodes():
     )
 
     print(pyMetrics.get_import_modules(tree))
+
+def test_def_names():
+    tree = ast.parse(
+        "def funcA(argName):\n"
+        "  pass\n"
+        "class ClsDummy:\n"
+        "  def methodA(method_argX):\n"
+        "    pass\n"
+        "async def funcAsync(asyncArg):\n"
+        "  pass\n"
+        "a = 3\n"
+    )
+
+    print(pyMetrics.get_definition_names(tree))
     

@@ -64,4 +64,28 @@ def get_import_modules(tree):
             module_list.append(node_x.module)        
     return module_list
 
+def get_definition_names(tree):
+    DEF_NODE_TYPES = ["Assign", "AsyncFunctionDef", 
+        "FunctionDef", "ClassDef"]
+    def_nodes = get_node_in_category(tree, DEF_NODE_TYPES)
+    def_names = []
+    for node_x in def_nodes:        
+        if isinstance(node_x, _ast.Assign):
+            for targ_x in node_x.targets:
+                if not isinstance(targ_x, _ast.Name):
+                    continue
+                def_names.append(targ_x.id)            
+        elif isinstance(node_x, _ast.FunctionDef):
+            def_names.append(node_x.name)
+            def_names += [arg_x.arg for arg_x in node_x.args.args]
+        elif isinstance(node_x, _ast.AsyncFunctionDef):
+            def_names.append(node_x.name)
+            def_names += [arg_x.arg for arg_x in node_x.args.args]
+        elif isinstance(node_x, _ast.ClassDef):
+            def_names.append(node_x.name)
+        else:
+            print("WARNING: unrecognized node types: %s", 
+                type(node_x).__name__)
+    return def_names
+
     
