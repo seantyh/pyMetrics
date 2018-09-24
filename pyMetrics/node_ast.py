@@ -87,8 +87,8 @@ def node_count(tree):
     return n_node
 
 def tree_depth(tree):
-    children = ast.iter_child_nodes(tree)    
+    children = ast.iter_child_nodes(tree)        
     depth = 0
     for node_ch in children:
-        depth = max(depth+1, tree_depth(node_ch))
+        depth = max(depth, tree_depth(node_ch)+1)
     return depth

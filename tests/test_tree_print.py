@@ -15,3 +15,9 @@ def test_tree_print_func():
     "  return c"
     )
     pyMetrics.print_tree(tree)
+    print("depth: " + str(pyMetrics.tree_depth(tree)))
+
+def test_depth_simple():
+    tree = ast.parse("a=a+1")
+    pyMetrics.print_tree(tree)
+    print("depth: " + str(pyMetrics.tree_depth(tree)))
